@@ -27,6 +27,15 @@ for (i in 1:7) {
 
 insightdata$y <- at
 
+# at1 <- NULL
+# 
+# for (i in 1:6) {
+#   at1.1 <- insight[[i]][1][["AT"]][["mn"]]
+#   at1 <- c(at1, at1.1)}
+# 
+# insightdata$ymin <- at2
+
+
 minDay <- min(as.numeric(insight$sol_keys))
 
 maxDay <- max(as.numeric(insight$sol_keys))

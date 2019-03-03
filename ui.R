@@ -62,7 +62,14 @@ ui <- dashboardPage(skin = "red",
 
 server <- function(input, output, session) {
   output$plot1 <- renderPlot({
-    p <- ggplot() + geom_line(mapping = aes(x = insightdata$x, y = insightdata$y))
+    p <- ggplot() + 
+      geom_line(mapping = aes(x = insightdata$x, y = insightdata$y), size = 2, color = "red") +
+      theme_gray() + 
+      ylab("Earth Day") +
+      xlab("Temperature in degrees C") +
+      ggtitle("Air Temperature") + 
+      theme(title =  element_text(hjust = 0),
+            plot.title = element_text(hjust = 0.5))
     print(p)
 })}
 
