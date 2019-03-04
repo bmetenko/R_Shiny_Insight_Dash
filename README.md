@@ -1,4 +1,4 @@
-# R_Shiny_Insight_Dash
+# R_Shiny_Insight_Dash[Board]
 This code creates a quick R shiny dashboard that displays recent data from the NASA Mars insight rover.
 Data is gathered from a javascript API connected to https://mars.nasa.gov/insight/weather/
 
