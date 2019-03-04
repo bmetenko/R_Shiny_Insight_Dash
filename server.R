@@ -1,6 +1,6 @@
 library(shiny)
 
-source("helpers.R")
+# source("helpers.R")
 
 library(ggplot2)
 library(jsonlite)
@@ -21,8 +21,9 @@ insightdata$x <- as.numeric(names(insight)[-countDays])
 
 at <- NULL
 
-for (i in 1:7) {
-  at2 <- insight[[i]][1][["AT"]][["mx"]]
+for (i in 1:6) {
+  message(i)
+  at2 <- insight[[i]][["AT"]][["av"]]
   at <- c(at, at2)}
 
 insightdata$y <- at

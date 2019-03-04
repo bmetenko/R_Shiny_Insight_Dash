@@ -1,4 +1,9 @@
 library(jsonlite)
+library(ggplot2)
+library(readxl)
+library(jpeg)
+library(grid)
+library(png)
 
 nasa_api <- "https://mars.nasa.gov/rss/api/?feed=weather&category=insight&feedtype=json"
 
@@ -16,13 +21,14 @@ tempToF <- function(degreesC) {
   degreesF <- ((9/5*degreesC)+32)
   return(degreesF)
 }
-tempToC <- function(degreesF) {
-  tryCatch(expr = (degreesC <- ((5/9*degreesF) - 32))
-           
-  )
-  
-  return(degreesC)
-}
+
+# tempToC <- function(degreesF) {
+#   tryCatch(expr = (degreesC <- ((5/9*degreesF) - 32))
+#            
+#   )
+#   
+#   return(degreesC)
+# }
 
 # `$`(`$`(insight, `87`), `AT`)$`av`
 
@@ -39,10 +45,10 @@ for (j in 1:4) {
   at <- NULL
   for (i in 1:countDays) {
     message(paste0(j, ":", i))
-    at2 <- insight[[i]][1]["AT"][["AT"]][[j]]
+    at2 <- insight[[i]][["AT"]][[j]]
     at <- c(at, at2)}
   
-  varNames <- names(insight[[1]][1]["AT"][["AT"]])
+  varNames <- names(insight[[1]][["AT"]])
   eval(parse(text = paste0("insightdata$y",varNames[j],"<- at")))
   # insightdata$y <- at
 }
@@ -51,8 +57,17 @@ avShow = TRUE
 mnShow = TRUE
 mxShow = TRUE
 
-# myTemp = 25
+# imageParameters ----
 
+z <- "logo.jpg"
+img <- readJPEG("logo.jpg")
+g <- rasterGrob(img, interpolate = T, gp = gpar(alpha = 0.5))
+
+imgMin <- (minDay + maxDay)/2 - 1
+imgMax <- (minDay + maxDay)/2 + 1
+
+
+# Graphing ----
 p <- ggplot() + 
 {if(avShow) geom_line(mapping = aes(x = insightdata$x, y = insightdata$yav), 
                       size = 2, color = "yellow", alpha = 0.75)} + 
@@ -61,6 +76,7 @@ p <- ggplot() +
 {if(mxShow) geom_line(mapping = aes(x = insightdata$x, y = insightdata$ymx),
                       size = 2, color = "blue", alpha =0.75)} + 
   theme_minimal() + 
+  annotation_custom(g, xmin=imgMin, xmax=imgMax, ymin=-50, ymax=-25)+ 
   xlab("Earth Day") +
   ylab("Temperature in degrees C") +
   ggtitle("Air Temperature") + 
@@ -75,4 +91,5 @@ p <- ggplot() +
 print(p)
 
 
+# Json Output ----
 write_json(insight,path = paste0("InsightOutput.", Sys.Date(),"-min,", minDay,"-max,",maxDay, ".json"))
