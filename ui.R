@@ -28,31 +28,53 @@ maxDay <- max(as.numeric(insight$sol_keys))
 
 
 # UI Calls ----
-ui <- dashboardPage(skin = "red",
+ui <- dashboardPage(skin = "red", 
   dashboardHeader(title = "Mars Insight Weather Dashboard"),
-  dashboardSidebar(collapsed = FALSE,
-                   h3(" Mars weather for which Earth Days of the Sol year?"),
-                   dateRangeInput( "dateUse",label = "Dates:", 
-                                   end = Sys.Date(), start = Sys.Date() - 4, 
-                                   separator = " to ", min = Sys.Date() -4, 
-                                   max = Sys.Date(), autoclose = TRUE)),
+  dashboardSidebar(collapsed = TRUE,
+                   h2("Place Info Here.")),
   dashboardBody(
-    plotOutput("plot1"),
+    
     fluidRow(
+      box(
+        plotOutput("plot1"),
+        "Day 87 corresponds to February 26th",
+        align = "center",
+        h3(" Mars weather for which Earth Days of the Sol year?"),
+        dateRangeInput( "dateUse",label = "Dates:", 
+                        end = Sys.Date(), start = Sys.Date() - 4, 
+                        separator = " to ", min = Sys.Date() -4, 
+                        max = Sys.Date(), autoclose = TRUE)
+      ),
     box(
       title = "Current Time Delay between the Earth and Mars",
-      status = "warning", 
-      solidHeader = T, 
-      collapsible = TRUE,
+      status = "danger", 
+      solidHeader = TRUE, 
+      collapsible = FALSE,
       collapsed = FALSE,
       # width = 10,
-      "3 to 4 days"
+      h3("3 to 4 days"),
+      align = "center"
     ),
     box(
-      img(src = "www/test.png")
+      title = "Temperature To Display",
+      radioButtons("radio1",
+                   label = "Currently Selected:",
+                   choices = list("*C" = "C", "*F" = "F"),
+                   inline = T), 
+      solidHeader = TRUE,
+      collapsible = FALSE,
+      status = "success",
+      align = "center"
     ),
-    box(),
-    box()
+    box(title = "Plot Settings",
+      radioButtons("AveragesPlotted",label = "Plot Averages?",
+                   choices = list("Yes!", "No..."), inline = T),
+      radioButtons("MinsPlotted",label = "Plot Minimum Temps?",
+                   choices = list("Yes!", "No..."), inline = T),
+      radioButtons("MaxsPlotted",label = "Plot Maximum Temps?",
+                   choices = list("Yes!", "No..."), inline = T),
+      status = "primary"
+    )
   )),
   
   sliderInput("myslider", "", min=minDay, max=maxDay, value=maxDay))
@@ -63,15 +85,22 @@ ui <- dashboardPage(skin = "red",
 server <- function(input, output, session) {
   output$plot1 <- renderPlot({
     p <- ggplot() + 
-      geom_line(mapping = aes(x = insightdata$x, y = insightdata$y), size = 2, color = "red") +
-      theme_gray() + 
-      ylab("Earth Day") +
-      xlab("Temperature in degrees C") +
+      geom_line(mapping = aes(x = insightdata$x, y = insightdata$y), size = 2, color = "yellow") +
+      theme_minimal() + 
+      xlab("Earth Day") +
+      ylab("Temperature in degrees C") +
       ggtitle("Air Temperature") + 
+      scale_y_continuous(minor_breaks = seq(-20, 0, 1)) +
+      scale_x_continuous(minor_breaks = seq(80, 100, 1)) +
       theme(title =  element_text(hjust = 0),
-            plot.title = element_text(hjust = 0.5))
+            plot.title = element_text(hjust = 0.5),
+            axis.title = element_text(face = "bold", size = 12),
+            axis.text = element_text(size = 15, angle = 45, face = "bold" ),
+            panel.background = element_rect(fill = "maroon"))
+    
     print(p)
-})}
+    
+    })}
 
 shinyApp(ui, server)
 
