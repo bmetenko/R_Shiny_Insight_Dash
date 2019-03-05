@@ -3,7 +3,7 @@ library(shinydashboard)
 library(ggplot2)
 library(jsonlite)
 
-
+source("server.R")
 
 nasa_api <- "https://mars.nasa.gov/rss/api/?feed=weather&category=insight&feedtype=json"
 
