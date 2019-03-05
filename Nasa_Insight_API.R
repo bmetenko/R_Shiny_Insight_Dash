@@ -84,34 +84,34 @@ imgMax <- (minDay + maxDay)/2 + 1
 
 tempNeed = "C"
 
-if (tempNeed == "F") {
-  p <- ggplot(data = insightdataF)
-} else {
-  p <- ggplot(data = insightdataC)
-}
-
-# Graphing ----
-p <- p + 
-{if(avShow) geom_line(mapping = aes(x = x, y = yav), 
-                      size = 2, color = "yellow", alpha = 0.75)} + 
-{if(mnShow) geom_line(mapping = aes(x = x, y = ymn),
-                      size = 2, color = "red", alpha = 0.75)} + 
-{if(mxShow) geom_line(mapping = aes(x = x, y = ymx),
-                      size = 2, color = "blue", alpha =0.75)} + 
-  theme_minimal() + 
-  annotation_custom(g, xmin=imgMin, xmax=imgMax, ymin=-50, ymax=-25)+ 
-  xlab("Earth Day") +
-  ylab("Temperature in degrees C") +
-  ggtitle("Air Temperature") + 
-  # scale_y_continuous(minor_breaks = seq(-20, 0, 1)) +
-  # scale_x_continuous(minor_breaks = seq(80, 100, 1)) +
-  theme(title =  element_text(hjust = 0),
-        plot.title = element_text(hjust = 0.5),
-        axis.title = element_text(face = "bold", size = 12),
-        axis.text = element_text(size = 15, angle = 45, face = "bold" ),
-        panel.background = element_rect(fill = "maroon"))
-
-print(p)
+# if (tempNeed == "F") {
+#   p <- ggplot(data = insightdataF)
+# } else {
+#   p <- ggplot(data = insightdataC)
+# }
+# 
+# # Graphing ----
+# p <- p + 
+# {if(avShow) geom_line(mapping = aes(x = x, y = yav), 
+#                       size = 2, color = "yellow", alpha = 0.75)} + 
+# {if(mnShow) geom_line(mapping = aes(x = x, y = ymn),
+#                       size = 2, color = "red", alpha = 0.75)} + 
+# {if(mxShow) geom_line(mapping = aes(x = x, y = ymx),
+#                       size = 2, color = "blue", alpha =0.75)} + 
+#   theme_minimal() + 
+#   annotation_custom(g, xmin=imgMin, xmax=imgMax, ymin=-50, ymax=-25)+ 
+#   xlab("Earth Day") +
+#   ylab("Temperature in degrees chosen") +
+#   ggtitle("Air Temperature") + 
+#   # scale_y_continuous(minor_breaks = seq(-20, 0, 1)) +
+#   # scale_x_continuous(minor_breaks = seq(80, 100, 1)) +
+#   theme(title =  element_text(hjust = 0),
+#         plot.title = element_text(hjust = 0.5),
+#         axis.title = element_text(face = "bold", size = 12),
+#         axis.text = element_text(size = 15, angle = 45, face = "bold" ),
+#         panel.background = element_rect(fill = "maroon"))
+# 
+# print(p)
 
 
 # Json Output ----

@@ -41,17 +41,32 @@ insightdata$y <- at
 
 # UI Calls ----
 ui <- dashboardPage(skin = "red", 
-  dashboardHeader(title = "Mars Insight Weather Dashboard"),
+## Header ####
+  dashboardHeader(title = "Mars Insight Weather Dashboard",
+                  dropdownMenu(type = "messages",
+                               messageItem(
+                                 from = "Developer Github Link",
+                                 message = "https://github.com/bmetenko/",
+                                 icon = icon("globe"),
+                                 time = "2019-03-04"
+                               ),
+                               messageItem(
+                                 from = "Data Source",
+                                 message = "All data is courtesy of NASA",
+                                 icon = icon("life-ring"),
+                                 time = "2019-03-04"
+                               )
+                  )
+                  ),
+## Sidebar ####
   dashboardSidebar(collapsed = TRUE,
                    helpText("This is a simple dashboard application for graphically viewing conditions on Mars recently experienced by the NASA InSight rover."),
                    helpText("The InSight rover was launched on May 5th, 2018 and landed on November 26th, 2018.",
-                            helpText(" It was manufactured for NASA's Jet Propulsion Laboratory by Lockheed Martin and uses a 600 watt lithium ion battery maintained by the rover's solar cells."))
-                   
-                   # menuItem("Weather", tabName = "weather", icon = icon("globe")),
-                   # menuItem("Pressure", tabName = "pressure", icon = icon("bars"))
-                   ),
+                            helpText(" It was manufactured for NASA's Jet Propulsion Laboratory by Lockheed Martin and uses a 600 watt lithium ion battery maintained by the rover's solar cells.")),
+                   HTML("<center> <iframe src='https://www.elveflow.com/wp-content/uploads/2015/10/NASA-logo.png' width='200%' height='200%' frameborder = '0' scrolling='no'></iframe> </center>")),
+## Body ####
   dashboardBody(
-    
+    ### Plot Output ####
     fluidRow(
       box(
         plotOutput("plot1"),
@@ -59,10 +74,11 @@ ui <- dashboardPage(skin = "red",
         align = "center",
         h2("Note: Mars weather for which Earth Days of the Sol year?"),
         dateRangeInput( "dateUse",label = "Dates:", 
-                        end = Sys.Date() - 2, start = Sys.Date() - 9, 
-                        separator = " to ", min = Sys.Date() - 9, 
-                        max = Sys.Date() -2 , autoclose = TRUE)
+                        end = Sys.Date() - 1, start = Sys.Date() - 7, 
+                        separator = " to ", min = Sys.Date() - 7, 
+                        max = Sys.Date() - 1 , autoclose = TRUE)
       ),
+    ### Warning for time delay ####
     box(
       title = "Current Time Delay between the Earth and Mars",
       status = "danger", 
@@ -73,6 +89,7 @@ ui <- dashboardPage(skin = "red",
       h3("3 to 4 days"),
       align = "center"
     ),
+    ### Temperature toggle ####
     box(
       title = "Temperature To Display",
       radioButtons("radio1",
@@ -84,6 +101,7 @@ ui <- dashboardPage(skin = "red",
       status = "success",
       align = "center"
     ),
+    ### Plot Settings Toggles ####
     box(title = "Plot Settings",
         solidHeader = TRUE,
       radioButtons("AveragesPlotted",label = "Plot Averages?",
@@ -95,12 +113,11 @@ ui <- dashboardPage(skin = "red",
       status = "primary",
       align = "center",
       helpText("Temperatures are graphed by minimum (red), maximum (blue), and average (yellow)")
+    ### Logo for mission ####
     ),
-    box(HTML("<iframe src='https://mars.nasa.gov/embed/22126/' width='25%' scrolling='no' frameborder='0'></iframe>"), align = "center", collapsible = FALSE)
+    box(HTML("<iframe src='https://mars.nasa.gov/embed/22073/' width='25%' scrolling='no' frameborder='0'></iframe>"), align = "center", collapsible = FALSE)
 
-  )),
-  
-  sliderInput("myslider", "", min=minDay, max=maxDay, value=maxDay))
+  )))
 
 
 
@@ -111,8 +128,6 @@ ui <- dashboardPage(skin = "red",
 # 
 #     })}
 
-
-Sys.Date() - as.Date(x = "2019-02-23")
-
+# Run App ####
 shinyApp(ui, server, options = list(height = 1080))
 
