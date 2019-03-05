@@ -5,4 +5,4 @@ Data is gathered from a javascript API connected to https://mars.nasa.gov/insigh
 App can be run in RStudio using the following code:
 `runGitHub("R_Shiny_Insight_Dash","bmetenko")`
 
-![Example Output][Example.PNG]
+![Example Output](https://raw.githubusercontent.com/bmetenko/R_Shiny_Insight_Dash/master/Example.PNG)
