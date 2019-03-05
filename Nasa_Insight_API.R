@@ -44,7 +44,7 @@ insightdata$x <- as.numeric(names(insight))
 for (j in 1:4) {
   at <- NULL
   for (i in 1:countDays) {
-    message(paste0(j, ":", i))
+    # message(paste0(j, ":", i))
     at2 <- insight[[i]][["AT"]][[j]]
     at <- c(at, at2)}
   
@@ -52,6 +52,21 @@ for (j in 1:4) {
   eval(parse(text = paste0("insightdata$y",varNames[j],"<- at")))
   # insightdata$y <- at
 }
+
+insightdata <- as.data.frame(insightdata)
+
+insightdataC <- insightdata
+
+insightdataF <- as.data.frame(cbind(insightdata$x, 
+                      tempToF(insightdata$yav),
+                      tempToF(insightdata$yct),
+                      tempToF(insightdata$ymn),
+                      tempToF(insightdata$ymx)))
+
+names(insightdataF) <- names(insightdataC)
+
+
+
 
 avShow = TRUE
 mnShow = TRUE
@@ -67,13 +82,21 @@ imgMin <- (minDay + maxDay)/2 - 1
 imgMax <- (minDay + maxDay)/2 + 1
 
 
+tempNeed = "C"
+
+if (tempNeed == "F") {
+  p <- ggplot(data = insightdataF)
+} else {
+  p <- ggplot(data = insightdataC)
+}
+
 # Graphing ----
-p <- ggplot() + 
-{if(avShow) geom_line(mapping = aes(x = insightdata$x, y = insightdata$yav), 
+p <- p + 
+{if(avShow) geom_line(mapping = aes(x = x, y = yav), 
                       size = 2, color = "yellow", alpha = 0.75)} + 
-{if(mnShow) geom_line(mapping = aes(x = insightdata$x, y = insightdata$ymn),
+{if(mnShow) geom_line(mapping = aes(x = x, y = ymn),
                       size = 2, color = "red", alpha = 0.75)} + 
-{if(mxShow) geom_line(mapping = aes(x = insightdata$x, y = insightdata$ymx),
+{if(mxShow) geom_line(mapping = aes(x = x, y = ymx),
                       size = 2, color = "blue", alpha =0.75)} + 
   theme_minimal() + 
   annotation_custom(g, xmin=imgMin, xmax=imgMax, ymin=-50, ymax=-25)+ 

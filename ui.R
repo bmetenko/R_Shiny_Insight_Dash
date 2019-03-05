@@ -3,40 +3,52 @@ library(shinydashboard)
 library(ggplot2)
 library(jsonlite)
 
-source("Package_Check.R")
-## API Calls ----
-# nasa_api <- "https://mars.nasa.gov/rss/api/?feed=weather&category=insight&feedtype=json"
+
+
+nasa_api <- "https://mars.nasa.gov/rss/api/?feed=weather&category=insight&feedtype=json"
+
+insight <- fromJSON(nasa_api, flatten=TRUE)
+
+insight$validity_checks <- NULL
+
+countDays <- length(names(insight))
+
+minDay <- min(as.numeric(insight$sol_keys))
+
+maxDay <- max(as.numeric(insight$sol_keys))
+
+insightdata <- NULL
+
+insightdata$x <- as.numeric(names(insight)[-countDays])
+
+at <- NULL
+
+for (i in 1:6) {
+  message(i)
+  at2 <- insight[[i]][["AT"]][["av"]]
+  at <- c(at, at2)}
+
+insightdata$y <- at
+
+# at1 <- NULL
 # 
-# insight <- fromJSON(nasa_api, flatten=TRUE)
+# for (i in 1:6) {
+#   at1.1 <- insight[[i]][1][["AT"]][["mn"]]
+#   at1 <- c(at1, at1.1)}
 # 
-# insight$validity_checks <- NULL
-# 
-# countDays <- length(names(insight))
-# 
-# insightdata <- NULL
-# 
-# insightdata$x <- as.numeric(names(insight)[-countDays])
-# 
-# at <- NULL
-# 
-# for (i in 1:7) {
-#   at2 <- insight[[i]][1][["AT"]][["mx"]]
-#   at <- c(at, at2)}
-# 
-# insightdata$y <- at
-# 
-# minDay <- min(as.numeric(insight$sol_keys))
-# 
-# maxDay <- max(as.numeric(insight$sol_keys))
+# insightdata$ymin <- at2
 
 
 # UI Calls ----
 ui <- dashboardPage(skin = "red", 
   dashboardHeader(title = "Mars Insight Weather Dashboard"),
   dashboardSidebar(collapsed = TRUE,
-                   h2("Place Info Here."),
-                   menuItem("Weather", tabName = "weather", icon = icon("globe")),
-                   menuItem("Pressure", tabName = "pressure", icon = icon("bars"))
+                   helpText("This is a simple dashboard application for graphically viewing conditions on Mars recently experienced by the NASA InSight rover."),
+                   helpText("The InSight rover was launched on May 5th, 2018 and landed on November 26th, 2018.",
+                            helpText(" It was manufactured for NASA's Jet Propulsion Laboratory by Lockheed Martin and uses a 600 watt lithium ion battery maintained by the rover's solar cells."))
+                   
+                   # menuItem("Weather", tabName = "weather", icon = icon("globe")),
+                   # menuItem("Pressure", tabName = "pressure", icon = icon("bars"))
                    ),
   dashboardBody(
     
@@ -47,9 +59,9 @@ ui <- dashboardPage(skin = "red",
         align = "center",
         h2("Note: Mars weather for which Earth Days of the Sol year?"),
         dateRangeInput( "dateUse",label = "Dates:", 
-                        end = Sys.Date(), start = Sys.Date() - 4, 
-                        separator = " to ", min = Sys.Date() -4, 
-                        max = Sys.Date(), autoclose = TRUE)
+                        end = Sys.Date() - 2, start = Sys.Date() - 9, 
+                        separator = " to ", min = Sys.Date() - 9, 
+                        max = Sys.Date() -2 , autoclose = TRUE)
       ),
     box(
       title = "Current Time Delay between the Earth and Mars",
@@ -73,15 +85,18 @@ ui <- dashboardPage(skin = "red",
       align = "center"
     ),
     box(title = "Plot Settings",
+        solidHeader = TRUE,
       radioButtons("AveragesPlotted",label = "Plot Averages?",
                    choices = list("Yes!", "No..."), inline = T),
       radioButtons("MinsPlotted",label = "Plot Minimum Temps?",
                    choices = list("Yes!", "No..."), inline = T),
       radioButtons("MaxsPlotted",label = "Plot Maximum Temps?",
                    choices = list("Yes!", "No..."), inline = T),
-      status = "primary"
+      status = "primary",
+      align = "center",
+      helpText("Temperatures are graphed by minimum (red), maximum (blue), and average (yellow)")
     ),
-    box(HTML("<iframe src='https://mars.nasa.gov/embed/22126/' width='25%' height='200'  scrolling='no' frameborder='0'></iframe>"))
+    box(HTML("<iframe src='https://mars.nasa.gov/embed/22126/' width='25%' scrolling='no' frameborder='0'></iframe>"), align = "center", collapsible = FALSE)
 
   )),
   
@@ -90,25 +105,14 @@ ui <- dashboardPage(skin = "red",
 
 
 
-server <- function(input, output, session) {
-  output$plot1 <- renderPlot({
-    p <- ggplot() + 
-      geom_line(mapping = aes(x = insightdata$x, y = insightdata$yav), size = 2, color = "yellow") +
-      theme_minimal() + 
-      xlab("Earth Day") +
-      ylab("Temperature in degrees C") +
-      ggtitle("Air Temperature") + 
-      scale_y_continuous(minor_breaks = seq(-20, 0, 1)) +
-      scale_x_continuous(minor_breaks = seq(80, 100, 1)) +
-      theme(title =  element_text(hjust = 0),
-            plot.title = element_text(hjust = 0.5),
-            axis.title = element_text(face = "bold", size = 12),
-            axis.text = element_text(size = 15, angle = 45, face = "bold" ),
-            panel.background = element_rect(fill = "maroon"))
-    
-    print(p)
-    
-    })}
+# server <- function(input, output, session) {
+#   output$plot1 <- renderPlot({
+#     print(p + theme_bw())
+# 
+#     })}
 
-shinyApp(ui, server)
+
+Sys.Date() - as.Date(x = "2019-02-23")
+
+shinyApp(ui, server, options = list(height = 1080))
 
