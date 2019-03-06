@@ -1,4 +1,4 @@
-required_pkg = c("shiny", "ggplot2", "dplyr", "httr", "jsonlite", "shinydashboard")
+required_pkg = c("shiny", "ggplot2", "dplyr","jpeg", "shinydashboard", "httr", "jsonlite", "shinydashboard")
 
 packages_to_add = required_pkg[!(required_pkg %in% installed.packages()[, 1])]
 
